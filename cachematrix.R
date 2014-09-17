@@ -1,15 +1,32 @@
-## Put comments here that give an overall description of what your
-## functions do
+# Creates new "class" of data which is a matrix
 
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-
+makeCacheMatrix <- function(A = matrix()) {
+    Ainv <- NULL
+    
+    # Function to instantiate the matrix values
+    set <- function(X) {
+        A <<- X
+        Ainv <<- NULL
+    }
+    
+    # "Methods" for getting and setting attributes of "makeCacheMatrix"
+    get <- function() A
+    setInv <- function(solve) Ainv <<- solve
+    getInv <- function() Ainv
+    list(set = set, get = get,
+         setInv = setInv,
+         getInv = getInv)
 }
 
-
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+# Used for Setting the inv if it hasn't been calculated already.
+cacheSolve <- function(A, ...) {
+    Ainv <- A$getInv()
+    if(!is.null(Ainv)) {
+        message("getting cached data")
+        return(Ainv)
+    }
+    data <- A$get()
+    Ainv <- solve(data, ...)
+    A$setInv(Ainv)
+    A
 }
